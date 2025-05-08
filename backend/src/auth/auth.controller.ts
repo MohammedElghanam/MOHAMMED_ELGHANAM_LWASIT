@@ -38,4 +38,18 @@ export class AuthController {
       }
   }
 
+  @Post('/forgotpassword')
+  async forgotPassword(@Body() createAuthDto: CreateAuthDto, @Res() res: Response): Promise<Response> {
+      try {
+          const result = await this.authService.forgotPassword(createAuthDto);
+          return res.status(200).json({
+              message: result.message,
+          });
+      } catch (error) {
+          return res.status(400).json({
+              message: error.message,
+          });
+      }
+  }
+
 }

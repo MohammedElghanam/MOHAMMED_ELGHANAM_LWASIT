@@ -66,4 +66,20 @@ export class AuthService {
     }
   }
 
+  async forgotPassword ( createAuthDto: CreateAuthDto ): Promise<{ message: string }> {
+    const { email } = createAuthDto;
+
+    const user = await this.authModel.findOne({ email })
+    if( !user ) throw new Error('User not found');
+
+    try {
+        
+      return {message: 'Password reset email sent successfully'}
+
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+        throw new Error('Failed to send password reset email');
+    }
+  }
+
 }
