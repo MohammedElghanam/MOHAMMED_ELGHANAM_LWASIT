@@ -39,5 +39,31 @@ export class AuthService {
       }
   }
 
+  async login ( createAuthDto: CreateAuthDto ): Promise<{ token: string }> {
+    const { email, password } = createAuthDto;
+
+    const user = await this.authModel.findOne({ email })
+    if( !user ) throw new Error('User not found');
+
+    try {
+        const isMatch = await bcrypt.compare(password, user.password)
+        if( !isMatch ) throw new Error('Password incorrect');
+
+        console.log('ok');
+        
+
+        const token = this.jwtService.sign({ 
+            userId: user._id, 
+            name: user.name,
+            email: user.email, 
+        });
+
+        return { token };
+
+    } catch (error) {
+        console.error('Login error:', error);
+        throw new Error('Login failed');
+    }
+  }
 
 }
