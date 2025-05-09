@@ -4,7 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { MailModule } from './mail/mail.module';
+import { MailerService } from './mailer/mailer.service';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -13,9 +14,9 @@ import { MailModule } from './mail/mail.module';
     }), 
     MongooseModule.forRoot(process.env.DB_CONNECTION!),
     AuthModule,
-    MailModule
+    MailerModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MailerService],
 })
 export class AppModule {}
