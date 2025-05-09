@@ -1,10 +1,8 @@
 import { Controller, Post, Body, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { CreateAuthDto } from './dto/create-auth.dto';  
 import { Request, Response } from 'express'
 import { MailerService } from 'src/mailer/mailer.service';
-import { JwtService } from '@nestjs/jwt';
 import { CreateResetPasswordDto } from './dto/create-reset-password.dto';
 
 @Controller('auth')
@@ -13,7 +11,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly mailerService: MailerService,
-    private jwtService: JwtService 
   ) {}
 
   @Post('/register')
