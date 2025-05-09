@@ -23,13 +23,13 @@ jobs:
 
       - name: Build and push frontend Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/frontend:latest -f frontend/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/frontend:latest
+          docker build -t ghcr.io/mohammedelghanam/frontend:latest -f frontend/Dockerfile .
+          docker push ghcr.io/mohammedelghanam/frontend:latest
 
       - name: Build and push backend Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/backend:latest -f backend/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/backend:latest
+          docker build -t ghcr.io/mohammedelghanam/backend:latest -f backend/Dockerfile .
+          docker push ghcr.io/mohammedelghanam/backend:latest
 
   # deploy:
   #   runs-on: ubuntu-latest
