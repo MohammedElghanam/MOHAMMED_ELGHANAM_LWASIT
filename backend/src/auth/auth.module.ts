@@ -6,6 +6,7 @@ import { AuthSchema } from './entities/auth.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   imports: [
@@ -24,7 +25,9 @@ import { JwtModule } from '@nestjs/jwt';
       }
     }),
     
-    MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema}])
+    MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema}]),
+
+    MailerModule
   ],
   controllers: [AuthController],
   providers: [AuthService],
