@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKENS }}
+          registry: ghcr.io
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push frontend Docker image
+        run: |
+          docker build -t ghcr.io/mohammedelghanam/frontend:latest -f frontend/Dockerfile .
+          docker push ghcr.io/mohammedelghanam/frontend:latest
+
+      - name: Build and push backend Docker image
+        run: |
+          docker build -t ghcr.io/mohammedelghanam/backend:latest -f backend/Dockerfile .
+          docker push ghcr.io/mohammedelghanam/backend:latest
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   steps:
+  #     - name: Deploy to Railway
+  #       run: |
+  #         curl -sSL https://railway.app/cli.sh | bash
+  #         railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
+  #         railway up
