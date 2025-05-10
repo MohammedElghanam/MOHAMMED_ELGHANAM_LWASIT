@@ -36,5 +36,6 @@ jobs:
       - name: Deploy to Railway
         run: |
           curl -fsSL https://railway.app/install.sh | sh
-          railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
+          echo ${{ secrets.RAILWAY_API_KEY }} | railway login --token
           railway up
+
