@@ -3,8 +3,6 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -31,12 +29,12 @@ jobs:
           docker build -t ghcr.io/mohammedelghanam/backend:latest -f backend/Dockerfile .
           docker push ghcr.io/mohammedelghanam/backend:latest
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: [build]
-  #   steps:
-  #     - name: Deploy to Railway
-  #       run: |
-  #         curl -sSL https://railway.app/cli.sh | bash
-  #         railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
-  #         railway up
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Deploy to Railway
+        run: |
+          curl -sSL https://railway.app/cli.sh | bash
+          railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
+          railway up
