@@ -37,7 +37,9 @@ jobs:
         run: |
           curl -fsSL https://railway.app/install.sh | sh
           export RAILWAY_TOKEN=${{ secrets.RAILWAY_API_KEY }}
-          railway login
+          railway auth login --token $RAILWAY_TOKEN
+          railway link -p c9fc305b-1603-44e6-979d-d20326090fcd
           railway up
+
 
 
