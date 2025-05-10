@@ -35,6 +35,6 @@ jobs:
     steps:
       - name: Deploy to Railway
         run: |
-          curl -sSL https://railway.app/cli.sh | bash
+          curl -fsSL https://railway.app/install.sh | sh
           railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
           railway up
