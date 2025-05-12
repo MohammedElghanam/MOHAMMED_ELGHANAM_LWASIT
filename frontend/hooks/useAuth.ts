@@ -1,34 +1,57 @@
 import { useState } from 'react';
+import { RegisterSuccessResponse, LoginSuccessResponse, ErrorResponse } from '../types/authResponse';
+import { validate } from '../utils/authValidation';
 import axios from "axios";
 import { useRouter } from 'next/router';
 
 const useAuth = () => {
+    
+    // const router = useRouter();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({email: '', password: '' });
-    const [errorMessage, setErrorMessage] = useState();
+    const [errors, setErrors] = useState({name:'', email: '', password: '' });
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = async (e: any) => {
         e.preventDefault()
         
-        const formData = { name, email, password}
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, formData);
+            const errors = validate(name, email, password);
+            if (errors.name || errors.email || errors.password) {
+                setErrors(errors);
+                return;
+            }
+
+            const formData = { name, email, password}
+            const response = await axios.post<RegisterSuccessResponse>(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, formData);
 
             if (response.status === 201) {
-                console.log('dkhal hna');
-                console.log(response);
-                
-                
+                setName('');
                 setEmail('');
                 setPassword('');
-                // localStorage.setItem('token', response.data.token);
-                // navigate('/login')
+                // router.push('/login');
             }
             
-        } catch (error) {
-            
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    const errResponse: ErrorResponse = error.response.data as ErrorResponse;
+                    setErrorMessage(errResponse.message || 'Server Error');
+                    console.error('Error registering user:', errResponse.message);
+                }
+                else if (error.request) {
+                    setErrorMessage('No response from server');
+                    console.error('No response received:', error.request);
+                } 
+                else {
+                    setErrorMessage('Error setting up request');
+                    console.error('Error setting up request:', error.message);
+                }
+            } else {
+                setErrorMessage('Unexpected error occurred');
+                console.error('Unexpected error:', error);
+            }
         }
     }
 
@@ -37,17 +60,13 @@ const useAuth = () => {
         
         const formData = {email, password}
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, formData);
+            const response = await axios.post<LoginSuccessResponse>(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, formData);
 
             if (response.status === 200) {
-                console.log('dkhal hna');
                 console.log(response.data.token);
-                
-                
                 setEmail('');
                 setPassword('');
-                // localStorage.setItem('token', response.data.token);
-                // navigate('/login')
+                localStorage.setItem('token', response.data.token);
             }
 
         } catch (error) {

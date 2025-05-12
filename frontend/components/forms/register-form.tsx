@@ -2,6 +2,8 @@
 
 import useAuth from "@/hooks/useAuth";
 import { Input } from "../ui/input";
+import Error from "../alerts/erros";
+import Link from "next/link";
 
 export default function RegisterForm() {
 
@@ -37,7 +39,7 @@ export default function RegisterForm() {
                         placeholder=" Enter Name" 
                         className=" w-60 lg:w-72 h-8 lg:h-9 px-1 rounded-md border-[0.5px] border-gray-500 focus:border-blue-600 text-xs lg:text-sm" 
                     />
-                    {/* {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>} */}
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                 </div>
                 <div className=" flex flex-col justify-center items-start mb-3">
                     <label className=" text-xs lg:text-sm font-medium text-gray-900 mb-1" htmlFor="email">Email Address <span className=" text-red-600">*</span></label>
@@ -50,7 +52,7 @@ export default function RegisterForm() {
                         placeholder=" Enter Email Address" 
                         className=" w-60 lg:w-72 h-8 lg:h-9 px-1 rounded-md border-[0.5px] border-gray-500 focus:border-blue-600 text-xs lg:text-sm" 
                     />
-                    {/* {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>} */}
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
                 <div className="  flex flex-col justify-center items-start mb-3">
                     <label className=" text-xs lg:text-sm font-medium text-gray-900 mb-1" htmlFor="password">Password <span className=" text-red-600">*</span></label>
@@ -63,10 +65,10 @@ export default function RegisterForm() {
                         placeholder=" Enter Password" 
                         className=" w-60 lg:w-72 h-8 lg:h-9 px-1 rounded-md border-[0.5px] border-gray-500 focus:border-blue-600 text-xs lg:text-sm" 
                     />
-                    {/* {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>} */}
+                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
                 <div className="">
-                    <button className=" w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-md text-white font-semibold text-sm lg:text-sm">Log In</button>
+                    <button className=" w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-md text-white font-semibold text-sm lg:text-sm">Creat account</button>
                 </div>
                 <div className="relative flex py-3 lg:py-5 items-center">
                   <div className="flex-grow border-t border-gray-300"></div>
@@ -92,11 +94,11 @@ export default function RegisterForm() {
                 </div>
                 <div className=" flex justify-center items-center mt-6">
                     <p className=" text-xs font-medium text-gray-800">Need an account? 
-                    <a className=" text-blue-500" href=""> Create an account</a></p>
+                    <Link className=" text-blue-500" href="/login"> Log In</Link></p>
                 </div>
             </form>
         </div>
     </div>
-    {/* {errorMessage && <Error errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />} */}
+    {errorMessage && <Error errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />}
 </>
 }
