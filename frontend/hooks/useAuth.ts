@@ -1,17 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RegisterSuccessResponse, LoginSuccessResponse, ErrorResponse } from '../types/authResponse';
 import { validate } from '../utils/authValidation';
 import axios from "axios";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const useAuth = () => {
     
-    // const router = useRouter();
+    const router = useRouter();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({name:'', email: '', password: '' });
     const [errorMessage, setErrorMessage] = useState('');
+
+    const clearForm = () => {
+        setName('');
+        setEmail('');
+        setPassword('');
+        setErrors({ name: '', email: '', password: '' });
+    };
+
+    const handleErrors = (error: unknown) => {
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                const errResponse: ErrorResponse = error.response.data as ErrorResponse;
+                setErrorMessage(errResponse.message || 'Server Error');
+            } else if (error.request) {
+                setErrorMessage('No response from server');
+            } else {
+                setErrorMessage('Error setting up request');
+            }
+        } else {
+            setErrorMessage('Unexpected error occurred');
+        }
+    };
 
     const handleRegister = async (e: any) => {
         e.preventDefault()
@@ -27,50 +50,46 @@ const useAuth = () => {
             const response = await axios.post<RegisterSuccessResponse>(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, formData);
 
             if (response.status === 201) {
-                setName('');
-                setEmail('');
-                setPassword('');
-                // router.push('/login');
+                clearForm();
             }
             
         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-                if (error.response) {
-                    const errResponse: ErrorResponse = error.response.data as ErrorResponse;
-                    setErrorMessage(errResponse.message || 'Server Error');
-                    console.error('Error registering user:', errResponse.message);
-                }
-                else if (error.request) {
-                    setErrorMessage('No response from server');
-                    console.error('No response received:', error.request);
-                } 
-                else {
-                    setErrorMessage('Error setting up request');
-                    console.error('Error setting up request:', error.message);
-                }
-            } else {
-                setErrorMessage('Unexpected error occurred');
-                console.error('Unexpected error:', error);
-            }
+            handleErrors(error);
         }
     }
 
     const handleLogin = async (e: any) => {
         e.preventDefault()
         
-        const formData = {email, password}
         try {
+            const errors = validate(email, password);
+            if (errors.email || errors.password) {
+                setErrors(errors);
+                return;
+            }
+            const formData = {email, password}
             const response = await axios.post<LoginSuccessResponse>(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, formData);
 
             if (response.status === 200) {
-                console.log(response.data.token);
-                setEmail('');
-                setPassword('');
-                localStorage.setItem('token', response.data.token);
+                clearForm();
+                console.log('ok');
+                const token = response.headers?.authorization || response.headers?.Authorization;
+                // console.log(token);
+                
+                if (token) {
+                    Cookies.set('token', token.replace('Bearer ', ''), {
+                        expires: 24 * 60 * 60 * 1000,
+                        secure: true,
+                        sameSite: 'strict',
+                    });
+                    console.log('Login successful');
+                    
+                    router.push('/register');
+                }
             }
 
-        } catch (error) {
-            
+        } catch (error: unknown) {
+            handleErrors(error);
         }
     }
 

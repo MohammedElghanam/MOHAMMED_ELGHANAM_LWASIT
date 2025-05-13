@@ -10,7 +10,7 @@ export interface RegisterSuccessResponse {
 }
 
 export interface LoginSuccessResponse {
-    token: string;
+    message: string;
 }
 
 export interface ErrorResponse {

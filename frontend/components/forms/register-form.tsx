@@ -16,7 +16,6 @@ export default function RegisterForm() {
         setPassword,
         handleRegister,
         errors,
-        setErrors,
         errorMessage,
         setErrorMessage
     } = useAuth();
