@@ -48,8 +48,8 @@ export class AuthService {
 
     try {
         const isMatch = await bcrypt.compare(password, user.password)
-        console.log('Password :', password);
-        console.log('user password :', user.password);
+        // console.log('Password :', password);
+        // console.log('user password :', user.password);
         
         if( !isMatch ) throw new Error('Password incorrect');
 

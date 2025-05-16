@@ -32,8 +32,11 @@ export class AuthController {
   async login (@Body() createAuthDto: CreateAuthDto, @Res() res: Response): Promise<Response> {
       try {
           const result = await this.authService.login(createAuthDto);
-          return res.status(200).json({
-              token: result.token,
+          return res.status(200)
+          .set('Authorization', `Bearer ${result.token}`)
+          .set('Access-Control-Expose-Headers', 'Authorization')
+          .json({
+            message: 'Login successful',
           });
       } catch (error) {
           return res.status(400).json({
