@@ -4,9 +4,11 @@ import { validate } from '../utils/authValidation';
 import axios from "axios";
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { useAuthContext } from '@/app/providers/auth-provider';
 
 const useAuth = () => {
-    
+
+    const { login } = useAuthContext();
     const router = useRouter();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -51,6 +53,7 @@ const useAuth = () => {
 
             if (response.status === 201) {
                 clearForm();
+                router.push('/login')
             }
             
         } catch (error: unknown) {
@@ -74,17 +77,11 @@ const useAuth = () => {
                 clearForm();
                 console.log('ok');
                 const token = response.headers?.authorization || response.headers?.Authorization;
-                // console.log(token);
+                const user = response.data.user;
                 
                 if (token) {
-                    Cookies.set('token', token.replace('Bearer ', ''), {
-                        expires: 24 * 60 * 60 * 1000,
-                        secure: true,
-                        sameSite: 'strict',
-                    });
-                    console.log('Login successful');
-                    
-                    router.push('/register');
+                    const cleanToken = token.replace('Bearer ', '');
+                    login(cleanToken, user);
                 }
             }
 

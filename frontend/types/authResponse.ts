@@ -11,6 +11,7 @@ export interface RegisterSuccessResponse {
 
 export interface LoginSuccessResponse {
     message: string;
+    user: User;
 }
 
 export interface ErrorResponse {

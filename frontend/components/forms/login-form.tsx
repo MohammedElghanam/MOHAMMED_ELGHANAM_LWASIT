@@ -1,11 +1,16 @@
 "use client";
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import useAuth from "@/hooks/useAuth";
 import { Input } from "../ui/input";
 import Error from "../alerts/erros";
+import { useAuthContext } from "@/app/providers/auth-provider";
+import LoadingSpinner from "../ui/loadingSpinner";
 
 export default function LoginForm() {
 
+    const { isAuthenticated, loading } = useAuthContext()
     const {
         email,
         setEmail,
@@ -16,6 +21,18 @@ export default function LoginForm() {
         errorMessage,
         setErrorMessage,
     } = useAuth();
+    const router = useRouter()
+
+    useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard')
+    }
+  }, [isAuthenticated, loading, router])
+
+  if (loading || isAuthenticated) {
+    return <LoadingSpinner />
+  }
+
     
 
     return <>

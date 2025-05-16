@@ -37,6 +37,10 @@ export class AuthController {
           .set('Access-Control-Expose-Headers', 'Authorization')
           .json({
             message: 'Login successful',
+            user: {
+                name: result.user.name,
+                email: result.user.email,
+            },
           });
       } catch (error) {
           return res.status(400).json({
