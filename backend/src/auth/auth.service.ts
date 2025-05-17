@@ -40,7 +40,7 @@ export class AuthService {
       }
   }
 
-  async login ( createAuthDto: CreateAuthDto ): Promise<{ token: string }> {
+  async login ( createAuthDto: CreateAuthDto ): Promise<{ token: string, user: { name: string, email: string } }> {
     const { email, password } = createAuthDto;
 
     const user = await this.authModel.findOne({ email })
@@ -48,15 +48,18 @@ export class AuthService {
 
     try {
         const isMatch = await bcrypt.compare(password, user.password)
-        console.log('Password :', password);
-        console.log('user password :', user.password);
         
         if( !isMatch ) throw new Error('Password incorrect');
 
-
         const token= await this.generateToken(email);
 
-        return { token };
+        return { 
+            token,
+            user: {
+                name: user.name,
+                email: user.email
+            }
+         };
 
     } catch (error) {
         console.error('Login error:', error);

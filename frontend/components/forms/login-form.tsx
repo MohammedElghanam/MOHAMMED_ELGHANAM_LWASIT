@@ -1,13 +1,16 @@
 "use client";
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import useAuth from "@/hooks/useAuth";
 import { Input } from "../ui/input";
-
-// import useLogin from '../../hooks/useLogin';
-// import Error from '../alerts/errors';
+import Error from "../alerts/erros";
+import { useAuthContext } from "@/app/providers/auth-provider";
+import LoadingSpinner from "../ui/loadingSpinner";
 
 export default function LoginForm() {
 
+    const { isAuthenticated, loading } = useAuthContext()
     const {
         email,
         setEmail,
@@ -18,6 +21,18 @@ export default function LoginForm() {
         errorMessage,
         setErrorMessage,
     } = useAuth();
+    const router = useRouter()
+
+    useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard')
+    }
+  }, [isAuthenticated, loading, router])
+
+  if (loading || isAuthenticated) {
+    return <LoadingSpinner />
+  }
+
     
 
     return <>
@@ -38,7 +53,7 @@ export default function LoginForm() {
                         placeholder=" Enter Email Address" 
                         className=" w-60 lg:w-72 h-8 lg:h-9 px-1 rounded-md border-[0.5px] border-gray-500 focus:border-blue-600 text-xs lg:text-sm" 
                     />
-                    {/* {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>} */}
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
                 <div className="  flex flex-col justify-center items-start mb-3">
                     <label className=" text-xs lg:text-sm font-medium text-gray-900 mb-1" htmlFor="password">Password <span className=" text-red-600">*</span></label>
@@ -51,7 +66,7 @@ export default function LoginForm() {
                         placeholder=" Enter Password" 
                         className=" w-60 lg:w-72 h-8 lg:h-9 px-1 rounded-md border-[0.5px] border-gray-500 focus:border-blue-600 text-xs lg:text-sm" 
                     />
-                    {/* {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>} */}
+                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
                 <div className=" flex justify-between items-center mb-2">
                     <div className="flex justify-start items-end gap-2">
@@ -92,6 +107,6 @@ export default function LoginForm() {
             </form>
         </div>
     </div>
-    {/* {errorMessage && <Error errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />} */}
+    {errorMessage && <Error errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />}
 </>
 }
